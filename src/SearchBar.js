@@ -1,5 +1,6 @@
 import './SearchBar.css';
 import { useState, useRef, useEffect } from 'react';
+import MovieCard from './MovieCard';
 import { Autocomplete, TextField, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import ThemeProvider from '@mui/material';
 import axios from 'axios';
@@ -55,7 +56,6 @@ function SearchBar() {
 
   useEffect(() => {
     if (inputIsValidValue) {
-      console.log(searchVal)
       setDialogOpen(true)
       return;
     }
@@ -103,9 +103,9 @@ function SearchBar() {
       />
 
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Dodaj film: {`${searchVal?.title}`}</DialogTitle>
+        <DialogTitle>Dodaj film</DialogTitle>
         <DialogContent>
-
+          <MovieCard movie={searchVal} />
         </DialogContent>
       </Dialog>
 
