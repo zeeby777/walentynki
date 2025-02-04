@@ -1,7 +1,9 @@
 import './SearchBar.css';
 import { useState, useRef, useEffect } from 'react';
 import MovieCard from './MovieCard';
-import { Autocomplete, TextField, Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Autocomplete, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button, Icon  } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import ThemeProvider from '@mui/material';
 import axios from 'axios';
 
@@ -45,7 +47,7 @@ function SearchBar() {
         .then((res) => {
           let results = res.data.results;
           results.sort((a, b) => {
-            
+            return b.popularity - a.popularity
           })
           setOptions(results);
         });
@@ -55,7 +57,7 @@ function SearchBar() {
 
 
   useEffect(() => {
-    if (inputIsValidValue) {
+    if (inputIsValidValue && searchInputVal != "") {
       setDialogOpen(true)
       return;
     }
@@ -101,14 +103,27 @@ function SearchBar() {
           />
         )}
       />
-
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Dodaj film</DialogTitle>
-        <DialogContent>
-          <MovieCard movie={searchVal} />
-        </DialogContent>
-      </Dialog>
-
+                <DialogTitle>Dodaj film</DialogTitle>
+                <DialogContent>
+                    <MovieCard movie={searchVal} />
+                </DialogContent>
+                <DialogActions>
+                    <Button  
+                        variant="contained" 
+                        sx={{ backgroundColor: "#4CAF50", '&:hover': { backgroundColor: "#45A049" } }} 
+                        startIcon={<CheckIcon />}>
+                        Dodaj
+                    </Button>
+                    <Button 
+                        onClick={handleDialogClose} 
+                        variant="contained" 
+                        sx={{ backgroundColor: "#616161", '&:hover': { backgroundColor: "#757575" } }} 
+                        startIcon={<CloseIcon />}>
+                        Anuluj
+                    </Button>
+                </DialogActions>
+            </Dialog>
     </div>
   );
 }
