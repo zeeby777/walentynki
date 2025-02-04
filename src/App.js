@@ -63,6 +63,13 @@ const darkTheme = createTheme({
     },
 });
 
+const blankMovie = {
+    original_title: "?",
+    genre_ids: [],
+    release_date: "1970-01-01",
+    poster_path: ""
+}
+
 function App(){
     const fetchMovies = useCallback(() => {
         axios.get("https://movieapi.piotrkleban.com/listAll.php").then((res) => {
@@ -93,6 +100,7 @@ function App(){
             </Box>
             <SearchBar fetchMovies={fetchMovies} />
             <MovieList movies={movies} fetchMovies={fetchMovies} />
+            <MovieCard movie={blankMovie} />
         </ThemeProvider>
     )
 }
