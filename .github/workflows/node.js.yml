@@ -12,8 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x, 20.x, 22.x]  # Testing against multiple Node.js versions
 
     steps:
     - uses: actions/checkout@v4
@@ -22,8 +21,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm i --force
+    - run: npm install --force
     - run: CI=false npm run build --if-present --force
+    - run: ls -al ./build  # List the files in the build directory to verify everything is there
 
   deploy:
     runs-on: ubuntu-latest
@@ -31,24 +31,24 @@ jobs:
     if: success()
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4  # Check out the repository to deploy
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-    
+        node-version: 18.x  # You can set this to any stable version (e.g., 18.x)
+
     - name: Install dependencies
       run: npm install --force
 
     - name: Build the project
       run: CI=false npm run build --if-present
 
+    - name: Verify build output
+      run: ls -al ./build  # List the files again before deployment
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        # Optional: Specify the folder where your built site is located (e.g., `dist` or `build` folder)
-        folder: ./build
-        # GitHub Pages target branch (usually `gh-pages`)
-        target-branch: gh-pages
-        # GitHub token for authentication, will be auto-generated for you
+        folder: ./build  # The folder where the build output is located
+        target-branch: gh-pages  # The target branch for GitHub Pages
         github_token: ${{ secrets.GITHUB_TOKEN }}
