@@ -1,27 +1,11 @@
 import SearchBar from "./SearchBar";
-import { ThemeProvider, createTheme, CssBaseline, Typography } from "@mui/material";
+import { ThemeProvider, createTheme, CssBaseline, Typography, Box, Button } from "@mui/material";
 import MovieCard from "./MovieCard";
-
-const sampleMovie = {
-    "adult": false,
-    "backdrop_path": "/n3pJwYuPnkw7JX7tOMbH0GRfBPn.jpg",
-    "genre_ids": [
-        14,
-        16,
-        10751
-    ],
-    "id": 408,
-    "original_language": "en",
-    "original_title": "Snow White and the Seven Dwarfs",
-    "overview": "A beautiful girl, Snow White, takes refuge in the forest in the house of seven dwarfs to hide from her stepmother, the wicked Queen. The Queen is jealous because she wants to be known as \"the fairest in the land,\" and Snow White's beauty surpasses her own.",
-    "popularity": 78.126,
-    "poster_path": "/3VAHfuNb6Z7UiW12iYKANSPBl8m.jpg",
-    "release_date": "1938-01-14",
-    "title": "Snow White and the Seven Dwarfs",
-    "video": false,
-    "vote_average": 7.122,
-    "vote_count": 7468
-}
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import { useEffect, useCallback, useState } from "react";
+import axios from "axios";
+import MovieList from "./MovieList";
+import Gambling from "./Gambling";
 
 const darkTheme = createTheme({
     palette: {
@@ -40,8 +24,10 @@ const darkTheme = createTheme({
     },
     typography: {
         fontFamily: "Roboto, sans-serif",
-        h6: {
+        h2: {
             fontWeight: 600,
+            fontSize: '2rem',
+            textAlign: 'center', // Centering the header text
         },
         body1: {
             fontSize: "1rem",
@@ -61,6 +47,16 @@ const darkTheme = createTheme({
             styleOverrides: {
                 root: {
                     color: "#FFFFFF", // White text
+                    backgroundColor: "#F44336", // Red background
+                    '&:hover': {
+                        backgroundColor: "#D32F2F", // Darker red for hover
+                    },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '0.8rem 1.5rem', // Padding to make the button look decent
+                    borderRadius: '8px', // Rounded corners
+                    fontWeight: 'bold',
                 },
             },
         },
@@ -68,14 +64,37 @@ const darkTheme = createTheme({
 });
 
 function App(){
+    const fetchMovies = useCallback(() => {
+        axios.get("https://movieapi.piotrkleban.com/listAll.php").then((res) => {
+            console.log(res)
+            let cleanedMovies = res.data.map((val) => {
+                return val.details
+            })
+            setMovies(cleanedMovies)
+        })
+    })
+
+    const [movies, setMovies] = useState([])
+
+    useEffect(() => {
+        fetchMovies()
+    }, [])
+
     return(
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <Typography variant="h1">Walentynki!</Typography>
-            <SearchBar />
-            <MovieCard movie={sampleMovie} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2rem' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '2rem' }}>
+                    <Typography variant="h2">Walentynkowy wybieracz filmów™</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Gambling movies={movies} fetchMovies={fetchMovies}/>
+                </Box>
+            </Box>
+            <SearchBar fetchMovies={fetchMovies} />
+            <MovieList movies={movies} fetchMovies={fetchMovies} />
         </ThemeProvider>
     )
 }
 
-export default App
+export default App;
