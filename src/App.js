@@ -1,5 +1,4 @@
 import SearchBar from "./SearchBar";
-import theme from "./theme";
 import { ThemeProvider, createTheme, CssBaseline, Typography } from "@mui/material";
 import MovieCard from "./MovieCard";
 

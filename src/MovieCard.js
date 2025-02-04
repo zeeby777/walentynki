@@ -95,7 +95,7 @@ function MovieCard({movie}){
     }
     return (
         <Paper sx={{ maxWidth: 1200, backgroundColor: "#1E1E1E", color: "#fff", borderRadius: 2, boxShadow: 3, padding: 2, fontFamily: 'Roboto, sans-serif' }}>
-            <CardHeader title={movie?.title} sx={{ textAlign: "center", color: "#1E88E5", fontFamily: 'Roboto, sans-serif' }} />
+            <CardHeader title={movie?.title} sx={{ textAlign: "left", color: "#1E88E5", fontFamily: 'Roboto, sans-serif', fontWeight: 'bolder' }} />
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                 <CardMedia
                     component='img'
