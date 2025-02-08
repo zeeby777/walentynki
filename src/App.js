@@ -100,7 +100,6 @@ function App(){
             </Box>
             <SearchBar fetchMovies={fetchMovies} />
             <MovieList movies={movies} fetchMovies={fetchMovies} />
-            <MovieCard movie={blankMovie} />
         </ThemeProvider>
     )
 }
