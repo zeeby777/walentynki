@@ -3,6 +3,7 @@ import { Button, Dialog, DialogTitle, DialogContent, Box,  DialogActions } from 
 import { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import MovieCard from './MovieCard';
+import { useRef, useEffect } from 'react';
 
 const defaultMovie = {
     "adult": false,
@@ -24,21 +25,38 @@ const defaultMovie = {
     "vote_count": 5199
 }
 
+function randomColour(){
+    const randomInt = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    var h = randomInt(0, 360);
+    var s = randomInt(42, 98);
+    var l = randomInt(40, 90);
+    return `hsl(${h},${s}%,${l}%)`;
+}
+
 function Gambling({movies}){
     const [gamblingOpen, setGamblingOpen] = useState(false)
     const [isSpinning, setIsSpinning] = useState(false)
     const [winningMovie, setWinningMovie] = useState({})
     const [displayedMovie, setDisplayedMovie] = useState(defaultMovie)
     const [prizeNumber, setPrizeNumber] = useState()
+    const movieLabels = useRef([])
 
 
-
-    const movieLabels = movies.map((movie) => {
-        const parsed = JSON.parse(movie)
-        return {
-            option: parsed.original_title
-        }
-    })
+    useEffect(() => {
+        movieLabels.current = movies.map((movie) => {
+            const parsed = JSON.parse(movie)
+            return {
+                option: parsed.original_title,
+                style: {
+                    backgroundColor: randomColour(),
+                    fontSize: 6
+                }
+            }
+        })
+    }, [movies])
+    
 
     function handleGamblingOpen(){
         setGamblingOpen(true)
@@ -55,7 +73,6 @@ function Gambling({movies}){
         console.log(movieLabels)
         setIsSpinning(true)
     }
-
     return(
         <>
             <Button sx={{ backgroundColor: "#2196F3", 
@@ -72,6 +89,7 @@ function Gambling({movies}){
                 Kliknij, aby gambling
             </Button>
 
+            {movieLabels.current.length > 0 && 
             <Dialog open={gamblingOpen} onClose={handleGamblingClose}>
                 <DialogTitle>Mmmmmmm... losowość</DialogTitle>
                 <DialogContent>
@@ -79,9 +97,9 @@ function Gambling({movies}){
                         <Box sx={{display: 'flex', overflow: 'hidden'}}>
                             <Wheel
                             prizeNumber={prizeNumber}
-                            data={movieLabels}
+                            data={movieLabels.current}
                             mustStartSpinning={isSpinning}
-                            perpendicularText={true}
+                            perpendicularText={false}
                             onStopSpinning={() => {
                                 console.log(winningMovie)
                                 setDisplayedMovie(winningMovie)
@@ -101,7 +119,8 @@ function Gambling({movies}){
                     '&:hover': { backgroundColor: "#1976D2" }}} 
                     onClick={handleSpinStart}>Wybierz</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog>}
+            
 
             
         </>

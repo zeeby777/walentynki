@@ -81,39 +81,80 @@ const genres = [
 
 
 
-function MovieCard({movie}){
-    function generateGenresString(){
-        if(!movie){
-            return
-        }
-        let genreNames = ""
-        movie.genre_ids.map((val, index) => {
-            genreNames += genres.find((genre) => genre.id === val).name + "/"
-        })
-        return genreNames.slice(0, -1)
-    }
-    return (
-        <Paper sx={{width: '100%', backgroundColor: "#1E1E1E", color: "#fff", borderRadius: 2, boxShadow: 3, padding: 2, fontFamily: 'Roboto, sans-serif' }}>
-            <CardHeader title={movie?.title} sx={{ textAlign: "left", color: "#1E88E5", fontFamily: 'Roboto, sans-serif', fontWeight: 'bolder' }} />
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-                <CardMedia
-                    component='img'
-                    src={`https://image.tmdb.org/t/p/w500/${movie?.poster_path}`}
-                    sx={{ width: 150, borderRadius: 2 }}
-                />
-                <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h6" component="span" color="primary" sx={{ fontFamily: 'Roboto, sans-serif' }}>Gatunki: </Typography>
-                    <Typography variant="body1" component="span" sx={{ fontFamily: 'Roboto, sans-serif' }}>{generateGenresString()}</Typography>
-                    <br />
-                    <Typography variant="h6" component="span" color="primary" sx={{ fontFamily: 'Roboto, sans-serif' }}>Opis: </Typography>
-                    <Typography variant="body1" component="span" sx={{ fontFamily: 'Roboto, sans-serif' }}>{movie?.overview}</Typography>
-                    <br />
-                    <Typography variant="h6" component="span" color="primary" sx={{ fontFamily: 'Roboto, sans-serif' }}>Data wydania: </Typography>
-                    <Typography variant="body1" component="span" sx={{ fontFamily: 'Roboto, sans-serif' }}>{new Date(movie?.release_date).toLocaleDateString()}</Typography>
-                </CardContent>
-            </Box>
-        </Paper>
-    );
+function MovieCard({ movie }) {
+  function generateGenresString() {
+    if (!movie) return "";
+    return movie.genre_ids
+      .map((val) => genres.find((genre) => genre.id === val)?.name)
+      .filter(Boolean)
+      .join('/');
+  }
+
+  return (
+    <Paper
+      sx={{
+        width: '100%',
+        backgroundColor: "#1E1E1E",
+        color: "#fff",
+        borderRadius: 2,
+        boxShadow: 3,
+        padding: 2,
+        fontFamily: 'Roboto, sans-serif',
+      }}
+    >
+      <CardHeader
+        title={movie?.title}
+        sx={{
+          textAlign: "left",
+          color: "#1E88E5",
+          fontFamily: 'Roboto, sans-serif',
+          fontWeight: 'bolder',
+        }}
+      />
+
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: 'flex-start',
+          gap: 2,
+        }}
+      >
+        {/* Image + Release Date (always vertical) */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 150 }}>
+          <CardMedia
+            component="img"
+            src={`https://image.tmdb.org/t/p/w500/${movie?.poster_path}`}
+            sx={{ width: 150, borderRadius: 2 }}
+          />
+        </Box>
+
+        {/* Text content */}
+        <CardContent sx={{ flex: 1, padding: '0 !important' }}>
+          <Typography variant="h6" component="span" color="primary">
+            Gatunki:
+          </Typography>{' '}
+          <Typography variant="body1" component="span">
+            {generateGenresString()}
+          </Typography>
+          <br />
+          <Typography variant="h6" component="span" color="primary">
+            Opis:
+          </Typography>{' '}
+          <Typography variant="body1" component="span">
+            {movie?.overview}
+          </Typography>
+          <br />
+          <Typography variant="h6" component="span" color="primary" sx={{ mt: 1 }}>
+            Data wydania:
+          </Typography>{' '}
+          <Typography variant="body1" component="span">
+            {new Date(movie?.release_date).toLocaleDateString()}
+          </Typography>
+        </CardContent>
+      </Box>
+    </Paper>
+  );
 }
 
 export default MovieCard
